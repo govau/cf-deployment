@@ -22,7 +22,9 @@ addons:
     properties:
       loggregator:
         tls:
-          ca_cert: "((loggregator_ca.certificate))"
+          ca_cert: |
+            ((internal_ca.certificate))
+            ((internal_ca_2.certificate))
           agent:
             cert: "((loggregator_tls_agent.certificate))"
             key: "((loggregator_tls_agent.private_key))"
@@ -268,7 +270,9 @@ instance_groups:
       scalablesyslog:
         adapter:
           tls:
-            ca: "((loggregator_ca.certificate))"
+            ca: |
+              ((internal_ca.certificate))
+              ((internal_ca_2.certificate))
             cert: "((adapter_tls.certificate))"
             key: "((adapter_tls.private_key))"
             cn: ss-adapter
@@ -276,7 +280,9 @@ instance_groups:
             addr: reverse-log-proxy.service.cf.internal:8082
         adapter_rlp:
           tls:
-            ca: "((loggregator_ca.certificate))"
+            ca: |
+              ((internal_ca.certificate))
+              ((internal_ca_2.certificate))
             cert: "((adapter_rlp_tls.certificate))"
             key: "((adapter_rlp_tls.private_key))"
             cn: reverselogproxy
@@ -358,7 +364,9 @@ instance_groups:
     release: diego
     properties:
       tls: &cfdot_tls_client_properties
-        ca_certificate: "((service_cf_internal_ca.certificate))"
+        ca_certificate: |
+          ((internal_ca.certificate))
+          ((internal_ca_2.certificate))
         certificate: "((diego_rep_client.certificate))"
         private_key: "((diego_rep_client.private_key))"
   - name: bbs
@@ -380,9 +388,13 @@ instance_groups:
             db_username: diego
             db_password: "((diego_database_password))"
             db_driver: mysql
-          ca_cert: "((service_cf_internal_ca.certificate))"
+          ca_cert: |
+            ((internal_ca.certificate))
+            ((internal_ca_2.certificate))
           auctioneer: &diego_auctioneer_client_properties
-            ca_cert: "((service_cf_internal_ca.certificate))"
+            ca_cert: |
+              ((internal_ca.certificate))
+              ((internal_ca_2.certificate))
             client_cert: "((diego_auctioneer_client.certificate))"
             client_key: "((diego_auctioneer_client.private_key))"
           server_cert: "((diego_bbs_server.certificate))"
@@ -390,12 +402,16 @@ instance_groups:
           skip_consul_lock: true
           rep:
             require_tls: true
-            ca_cert: "((service_cf_internal_ca.certificate))"
+            ca_cert: |
+              ((internal_ca.certificate))
+              ((internal_ca_2.certificate))
             client_cert: "((diego_rep_client.certificate))"
             client_key: "((diego_rep_client.private_key))"
       loggregator: &diego_loggregator_client_properties
         use_v2_api: true
-        ca_cert: "((loggregator_ca.certificate))"
+        ca_cert: |
+          ((internal_ca.certificate))
+          ((internal_ca_2.certificate))
         cert: "((loggregator_tls_agent.certificate))"
         key: "((loggregator_tls_agent.private_key))"
       logging:
@@ -404,7 +420,9 @@ instance_groups:
   - name: silk-controller
     release: silk
     properties:
-      ca_cert: ((silk_ca.certificate))
+      ca_cert: |
+        ((internal_ca.certificate))
+        ((internal_ca_2.certificate))
       server_cert: ((silk_controller.certificate))
       server_key: ((silk_controller.private_key))
       database:
@@ -415,7 +433,9 @@ instance_groups:
         port: 3306
         name: network_connectivity
       silk_daemon:
-        ca_cert: ((silk_ca.certificate))
+        ca_cert: |
+          ((internal_ca.certificate))
+          ((internal_ca_2.certificate))
         client_cert: ((silk_daemon.certificate))
         client_key: ((silk_daemon.private_key))
   - name: locket
@@ -424,7 +444,9 @@ instance_groups:
       bpm:
         enabled: true
       tls:
-        ca_cert: "((service_cf_internal_ca.certificate))"
+        ca_cert: |
+          ((internal_ca.certificate))
+          ((internal_ca_2.certificate))
         cert: "((diego_locket_server.certificate))"
         key: "((diego_locket_server.private_key))"
       diego:
@@ -438,7 +460,9 @@ instance_groups:
             db_driver: mysql
       loggregator:
         use_v2_api: true
-        ca_cert: "((loggregator_ca.certificate))"
+        ca_cert: |
+          ((internal_ca.certificate))
+          ((internal_ca_2.certificate))
         cert: "((loggregator_tls_agent.certificate))"
         key: "((loggregator_tls_agent.private_key))"
       logging:
@@ -607,7 +631,9 @@ instance_groups:
     properties: &statsd_injector_properties
       loggregator:
         tls:
-          ca_cert: "((loggregator_ca.certificate))"
+          ca_cert: |
+            ((internal_ca.certificate))
+            ((internal_ca_2.certificate))
           statsd_injector:
             cert: "((loggregator_tls_statsdinjector.certificate))"
             key: "((loggregator_tls_statsdinjector.private_key))"
@@ -681,11 +707,15 @@ instance_groups:
       routing_api: &routing_api
         enabled: true
       credhub_api:
-        ca_cert: ((credhub_ca.certificate))
+        ca_cert: |
+          ((internal_ca.certificate))
+          ((internal_ca_2.certificate))
       ssl:
         skip_cert_verify: true
       uaa:
-        ca_cert: "((uaa_ca.certificate))"
+        ca_cert: |
+          ((internal_ca.certificate))
+          ((internal_ca_2.certificate))
         clients:
           cc_routing:
             secret: "((uaa_clients_cc-routing_secret))"
@@ -759,7 +789,9 @@ instance_groups:
         buildpacks: &blobstore-properties
           blobstore_type: webdav
           webdav_config:
-            ca_cert: "((service_cf_internal_ca.certificate))"
+            ca_cert: |
+              ((internal_ca.certificate))
+              ((internal_ca_2.certificate))
             blobstore_timeout: 5
             password: "((blobstore_admin_users_password))"
             private_endpoint: https://blobstore.service.cf.internal:4443
@@ -769,11 +801,15 @@ instance_groups:
         packages: *blobstore-properties
         droplets: *blobstore-properties
         mutual_tls: &cc_mutual_tls
-          ca_cert: "((service_cf_internal_ca.certificate))"
+          ca_cert: |
+            ((internal_ca.certificate))
+            ((internal_ca_2.certificate))
           public_cert: "((cc_tls.certificate))"
           private_key: "((cc_tls.private_key))"
         public_tls:
-          ca_cert: "((service_cf_internal_ca.certificate))"
+          ca_cert: |
+            ((internal_ca.certificate))
+            ((internal_ca_2.certificate))
           certificate: "((cc_public_tls.certificate))"
           private_key: "((cc_public_tls.private_key))"
       ccdb: &ccdb
@@ -858,17 +894,23 @@ instance_groups:
           password: "((routing_api_database_password))"
         locket:
           api_location: "locket.service.cf.internal:8891"
-          ca_cert: "((service_cf_internal_ca.certificate))"
+          ca_cert: |
+            ((internal_ca.certificate))
+            ((internal_ca_2.certificate))
           client_cert: "((diego_locket_client.certificate))"
           client_key: "((diego_locket_client.private_key))"
       uaa:
-        ca_cert: "((uaa_ca.certificate))"
+        ca_cert: |
+          ((internal_ca.certificate))
+          ((internal_ca_2.certificate))
         tls_port: 8443
   - name: policy-server
     release: cf-networking
     properties:
       uaa_client_secret: ((uaa_clients_network_policy_secret))
-      uaa_ca: ((uaa_ca.certificate))
+      uaa_ca: |
+        ((internal_ca.certificate))
+        ((internal_ca_2.certificate))
       database:
         type: mysql
         username: network_policy
@@ -879,7 +921,9 @@ instance_groups:
   - name: policy-server-internal
     release: cf-networking
     properties:
-      ca_cert: ((network_policy_ca.certificate))
+      ca_cert: |
+        ((internal_ca.certificate))
+        ((internal_ca_2.certificate))
       server_cert: ((network_policy_server.certificate))
       server_key: ((network_policy_server.private_key))
   - name: cc_uploader
@@ -890,11 +934,15 @@ instance_groups:
       capi:
         cc_uploader:
           cc:
-            ca_cert: "((service_cf_internal_ca.certificate))"
+            ca_cert: |
+              ((internal_ca.certificate))
+              ((internal_ca_2.certificate))
             client_cert: "((cc_bridge_cc_uploader.certificate))"
             client_key: "((cc_bridge_cc_uploader.private_key))"
           mutual_tls:
-            ca_cert: "((service_cf_internal_ca.certificate))"
+            ca_cert: |
+              ((internal_ca.certificate))
+              ((internal_ca_2.certificate))
             server_cert: "((cc_bridge_cc_uploader_server.certificate))"
             server_key: "((cc_bridge_cc_uploader_server.private_key))"
 - name: cc-worker
@@ -929,7 +977,9 @@ instance_groups:
       ssl:
         skip_cert_verify: true
       uaa:
-        ca_cert: "((uaa_ca.certificate))"
+        ca_cert: |
+          ((internal_ca.certificate))
+          ((internal_ca_2.certificate))
         clients:
           cc-service-dashboards:
             secret: "((uaa_clients_cc-service-dashboards_secret))"
@@ -959,7 +1009,9 @@ instance_groups:
           private_key: "((router_ssl.private_key))"
         ca_certs: |
           ((application_ca.certificate))
-          ((service_cf_internal_ca.certificate))
+          ((application_ca_2.certificate))
+          ((internal_ca.certificate))
+          ((internal_ca_2.certificate))
         backends:
           enable_tls: true
           cert_chain: ((gorouter_backend_tls.certificate))
@@ -976,7 +1028,9 @@ instance_groups:
         clients:
           gorouter:
             secret: "((uaa_clients_gorouter_secret))"
-        ca_cert: "((uaa_ca.certificate))"
+        ca_cert: |
+          ((internal_ca.certificate))
+          ((internal_ca_2.certificate))
         ssl:
           port: 8443
 - name: tcp-router
@@ -998,7 +1052,9 @@ instance_groups:
         oauth_secret: "((uaa_clients_tcp_router_secret))"
         router_group: default-tcp
       uaa:
-        ca_cert: "((uaa_ca.certificate))"
+        ca_cert: |
+          ((internal_ca.certificate))
+          ((internal_ca_2.certificate))
         tls_port: 8443
 - name: scheduler
   azs:
@@ -1030,13 +1086,17 @@ instance_groups:
       diego:
         auctioneer:
           bbs: &diego_bbs_client_properties
-            ca_cert: "((service_cf_internal_ca.certificate))"
+            ca_cert: |
+              ((internal_ca.certificate))
+              ((internal_ca_2.certificate))
             client_cert: "((diego_bbs_client.certificate))"
             client_key: "((diego_bbs_client.private_key))"
           ca_cert: "((service_cf_internal_ca.certificate))"
           rep:
             require_tls: true
-            ca_cert: "((service_cf_internal_ca.certificate))"
+            ca_cert: |
+              ((internal_ca.certificate))
+              ((internal_ca_2.certificate))
             client_cert: "((diego_rep_client.certificate))"
             client_key: "((diego_rep_client.private_key))"
           server_cert: "((diego_auctioneer_server.certificate))"
@@ -1066,7 +1126,9 @@ instance_groups:
       system_domain: "((system_domain))"
       routing_api: *routing_api
       uaa:
-        ca_cert: "((uaa_ca.certificate))"
+        ca_cert: |
+          ((internal_ca.certificate))
+          ((internal_ca_2.certificate))
         clients:
           cc-service-dashboards:
             secret: "((uaa_clients_cc-service-dashboards_secret))"
@@ -1090,7 +1152,9 @@ instance_groups:
               api_location: "locket.service.cf.internal:8891"
             skip_consul_lock: true
           cc:
-            ca_cert: "((service_cf_internal_ca.certificate))"
+            ca_cert: |
+              ((internal_ca.certificate))
+              ((internal_ca_2.certificate))
             client_cert: "((cc_bridge_tps.certificate))"
             client_key: "((cc_bridge_tps.private_key))"
           listener_enabled: false
@@ -1105,7 +1169,9 @@ instance_groups:
           host_key: "((diego_ssh_proxy_host_key.private_key))"
           uaa_secret: "((uaa_clients_ssh-proxy_secret))"
           uaa:
-            ca_cert: "((uaa_ca.certificate))"
+            ca_cert: |
+              ((internal_ca.certificate))
+              ((internal_ca_2.certificate))
           bbs: *diego_bbs_client_properties
       loggregator: *diego_loggregator_client_properties
       logging:
@@ -1120,12 +1186,16 @@ instance_groups:
             url: https://cloud-controller-ng.service.cf.internal:9023
           tls:
             client:
-              ca: "((loggregator_ca.certificate))"
+              ca: |
+                ((internal_ca.certificate))
+                ((internal_ca_2.certificate))
               cert: "((scheduler_client_tls.certificate))"
               key: "((scheduler_client_tls.private_key))"
               adapter_cn: "ss-adapter"
             api:
-              ca: "((service_cf_internal_ca.certificate))"
+              ca: |
+                ((internal_ca.certificate))
+                ((internal_ca_2.certificate))
               cert: "((scheduler_api_tls.certificate))"
               key: "((scheduler_api_tls.private_key))"
               cn: "cloud-controller-ng.service.cf.internal"
@@ -1162,7 +1232,9 @@ instance_groups:
     properties:
       loggregator:
         tls:
-          ca_cert: "((loggregator_ca.certificate))"
+          ca_cert: |
+            ((internal_ca.certificate))
+            ((internal_ca_2.certificate))
           doppler:
             cert: "((loggregator_tls_doppler.certificate))"
             key: "((loggregator_tls_doppler.private_key))"
@@ -1173,7 +1245,9 @@ instance_groups:
       egress_port: 8080
       health_addr: localhost:6060
       tls:
-        ca_cert: ((log_cache.ca))
+        ca_cert: |
+          ((internal_ca.certificate))
+          ((internal_ca_2.certificate))
         cert: ((log_cache.certificate))
         key: ((log_cache.private_key))
     release: log-cache
@@ -1187,7 +1261,9 @@ instance_groups:
     properties:
       logs_provider:
         tls:
-          ca_cert: ((logs_provider.ca))
+          ca_cert: |
+            ((internal_ca.certificate))
+            ((internal_ca_2.certificate))
           cert: ((logs_provider.certificate))
           key: ((logs_provider.private_key))
     release: log-cache
@@ -1289,14 +1365,18 @@ instance_groups:
   - name: log-cache-cf-auth-proxy
     properties:
       cc:
-        ca_cert: ((log_cache_tls_cc_auth_proxy.ca))
+        ca_cert: |
+          ((internal_ca.certificate))
+          ((internal_ca_2.certificate))
         capi_internal_addr: https://cloud-controller-ng.service.cf.internal:9023
         cert: ((log_cache_tls_cc_auth_proxy.certificate))
         common_name: cloud-controller-ng.service.cf.internal
         key: ((log_cache_tls_cc_auth_proxy.private_key))
       proxy_port: 8083
       uaa:
-        ca_cert: ((uaa_ca.certificate))
+        ca_cert: |
+          ((internal_ca.certificate))
+          ((internal_ca_2.certificate))
         client_id: doppler
         client_secret: ((uaa_clients_doppler_secret))
         internal_addr: https://uaa.service.cf.internal:8443
@@ -1319,8 +1399,9 @@ instance_groups:
       cflinuxfs2-rootfs:
         trusted_certs: |
           ((application_ca.certificate))
-          ((credhub_ca.certificate))
-          ((uaa_ca.certificate))
+          ((application_ca_2.certificate))
+          ((internal_ca.certificate))
+          ((internal_ca_2.certificate))
   - name: garden
     release: garden-runc
     properties:
@@ -1348,16 +1429,17 @@ instance_groups:
         enabled: true
       diego:
         executor:
-          instance_identity_ca_cert: ((diego_instance_identity_ca.certificate))
-          instance_identity_key: ((diego_instance_identity_ca.private_key))
+          instance_identity_ca_cert: ((application_ca.certificate))
+          instance_identity_key: ((application_ca.private_key))
         rep:
           preloaded_rootfses:
           - cflinuxfs2:/var/vcap/packages/cflinuxfs2/rootfs.tar
       containers:
         trusted_ca_certificates:
           - ((application_ca.certificate))
-          - ((credhub_ca.certificate))
-          - ((uaa_ca.certificate))
+          - ((application_ca_2.certificate))
+          - ((internal_ca.certificate))
+          - ((internal_ca_2.certificate))
       enable_declarative_healthcheck: true
       loggregator: *diego_loggregator_client_properties
       tls:
@@ -1381,13 +1463,17 @@ instance_groups:
         route_emitter:
           local_mode: true
           bbs:
-            ca_cert: "((service_cf_internal_ca.certificate))"
+            ca_cert: |
+              ((internal_ca.certificate))
+              ((internal_ca_2.certificate))
             client_cert: "((diego_bbs_client.certificate))"
             client_key: "((diego_bbs_client.private_key))"
       tcp:
         enabled: true
       uaa:
-        ca_cert: "((uaa_ca.certificate))"
+        ca_cert: |
+          ((internal_ca.certificate))
+          ((internal_ca_2.certificate))
         client_secret: "((uaa_clients_tcp_emitter_secret))"
       logging:
         format:
@@ -1402,13 +1488,17 @@ instance_groups:
   - name: vxlan-policy-agent
     release: silk
     properties:
-      ca_cert: ((network_policy_ca.certificate))
+      ca_cert: |
+        ((internal_ca.certificate))
+        ((internal_ca_2.certificate))
       client_cert: ((network_policy_client.certificate))
       client_key: ((network_policy_client.private_key))
   - name: silk-daemon
     release: silk
     properties:
-      ca_cert: ((silk_ca.certificate))
+      ca_cert: |
+        ((internal_ca.certificate))
+        ((internal_ca_2.certificate))
       client_cert: ((silk_daemon.certificate))
       client_key: ((silk_daemon.private_key))
   - name: silk-cni
@@ -1435,13 +1525,17 @@ instance_groups:
     properties:
       uaa:
         internal_url: https://uaa.service.cf.internal:8443
-        ca_cert: "((uaa_ca.certificate))"
+        ca_cert: |
+          ((internal_ca.certificate))
+          ((internal_ca_2.certificate))
       loggregator:
         tls:
           cc_trafficcontroller:
             cert: "((loggregator_tls_cc_tc.certificate))"
             key: "((loggregator_tls_cc_tc.private_key))"
-          ca_cert: "((loggregator_ca.certificate))"
+          ca_cert: |
+            ((internal_ca.certificate))
+            ((internal_ca_2.certificate))
           trafficcontroller:
             cert: "((loggregator_tls_tc.certificate))"
             key: "((loggregator_tls_tc.private_key))"
@@ -1454,7 +1548,9 @@ instance_groups:
         internal_service_hostname: "cloud-controller-ng.service.cf.internal"
         tls_port: 9023
         mutual_tls:
-          ca_cert: "((service_cf_internal_ca.certificate))"
+          ca_cert: |
+            ((internal_ca.certificate))
+            ((internal_ca_2.certificate))
   - name: reverse_log_proxy
     release: loggregator
     provides:
@@ -1462,7 +1558,9 @@ instance_groups:
     properties:
       loggregator:
         tls:
-          ca_cert: "((loggregator_ca.certificate))"
+          ca_cert: |
+            ((internal_ca.certificate))
+            ((internal_ca_2.certificate))
           reverse_log_proxy:
             cert: "((loggregator_tls_rlp.certificate))"
             key: "((loggregator_tls_rlp.private_key))"
@@ -1472,17 +1570,23 @@ instance_groups:
       http:
         address: "0.0.0.0:8088"
       logs_provider:
-        ca_cert: "((loggregator_ca.certificate))"
+        ca_cert: |
+          ((internal_ca.certificate))
+          ((internal_ca_2.certificate))
         client_cert: "((loggregator_rlp_gateway.certificate))"
         client_key: "((loggregator_rlp_gateway.private_key))"
       cc:
         capi_internal_addr: https://cloud-controller-ng.service.cf.internal:9023
-        ca_cert: ((service_cf_internal_ca.certificate))
+        ca_cert: |
+          ((internal_ca.certificate))
+          ((internal_ca_2.certificate))
         cert: ((loggregator_rlp_gateway_tls_cc.certificate))
         key: ((loggregator_rlp_gateway_tls_cc.private_key))
         common_name: cloud-controller-ng.service.cf.internal
       uaa:
-        ca_cert: ((uaa_ca.certificate))
+        ca_cert: |
+          ((internal_ca.certificate))
+          ((internal_ca_2.certificate))
         client_id: doppler
         client_secret: ((uaa_clients_doppler_secret))
         internal_addr: https://uaa.service.cf.internal:8443
@@ -1523,9 +1627,11 @@ instance_groups:
           mutual_tls:
             trusted_cas:
             - ((application_ca.certificate))
+            - ((application_ca_2.certificate))
           uaa:
             ca_certs:
-            - ((uaa_ca.certificate))
+            - ((internal_ca.certificate))
+            - ((internal_ca_2.certificate))
             url: https://uaa.service.cf.internal:8443
             verification_key: ((uaa_jwt_signing_key.public_key))
         authorization:
@@ -1571,6 +1677,34 @@ instance_groups:
     properties: {}
 
 variables:
+# All internal certs are signed with this
+# Only the certificate is referenced by jobs
+- name: internal_ca
+  type: certificate
+  options:
+    is_ca: true
+    common_name: internalCA
+# Intended for a legacy or to be CA.
+# Only the certificate is referenced by jobs
+- name: internal_ca_2
+  type: certificate
+  options:
+    is_ca: true
+    common_name: internalCA
+# User applications certs are signed with this
+# The private key is referenced by a diego job
+- name: application_ca
+  type: certificate
+  options:
+    common_name: appRootCA
+    is_ca: true
+# Intended for a legacy or to be CA.
+# Only the certificate is referenced by jobs
+- name: application_ca_2
+  type: certificate
+  options:
+    common_name: appRootCA
+    is_ca: true
 - name: blobstore_admin_users_password
   type: password
 - name: blobstore_secure_link_secret
@@ -1609,41 +1743,31 @@ variables:
   type: password
 - name: uaa_default_encryption_passphrase
   type: password
-- name: silk_ca
-  type: certificate
-  options:
-    is_ca: true
-    common_name: silk-ca
 - name: silk_controller
   type: certificate
   options:
-    ca: silk_ca
+    ca: internal_ca
     common_name: silk-controller.service.cf.internal
     extended_key_usage:
     - server_auth
 - name: silk_daemon
   type: certificate
   options:
-    ca: silk_ca
+    ca: internal_ca
     common_name: silk-daemon
     extended_key_usage:
     - client_auth
-- name: network_policy_ca
-  type: certificate
-  options:
-    is_ca: true
-    common_name: networkPolicyCA
 - name: network_policy_server
   type: certificate
   options:
-    ca: network_policy_ca
+    ca: internal_ca
     common_name: policy-server.service.cf.internal
     extended_key_usage:
     - server_auth
 - name: network_policy_client
   type: certificate
   options:
-    ca: network_policy_ca
+    ca: internal_ca
     common_name: clientName
     extended_key_usage:
     - client_auth
@@ -1691,27 +1815,22 @@ variables:
   type: ssh
 - name: uaa_jwt_signing_key
   type: rsa
-- name: service_cf_internal_ca
-  type: certificate
-  options:
-    is_ca: true
-    common_name: internalCA
 - name: blobstore_tls
   type: certificate
   options:
-    ca: service_cf_internal_ca
+    ca: internal_ca
     common_name: blobstore.service.cf.internal
 - name: diego_auctioneer_client
   type: certificate
   options:
-    ca: service_cf_internal_ca
+    ca: internal_ca
     common_name: auctioneer client
     extended_key_usage:
     - client_auth
 - name: diego_auctioneer_server
   type: certificate
   options:
-    ca: service_cf_internal_ca
+    ca: internal_ca
     common_name: auctioneer.service.cf.internal
     extended_key_usage:
     - server_auth
@@ -1721,14 +1840,14 @@ variables:
 - name: diego_bbs_client
   type: certificate
   options:
-    ca: service_cf_internal_ca
+    ca: internal_ca
     common_name: bbs client
     extended_key_usage:
     - client_auth
 - name: diego_bbs_server
   type: certificate
   options:
-    ca: service_cf_internal_ca
+    ca: internal_ca
     common_name: bbs.service.cf.internal
     extended_key_usage:
     - server_auth
@@ -1739,14 +1858,14 @@ variables:
 - name: diego_rep_client
   type: certificate
   options:
-    ca: service_cf_internal_ca
+    ca: internal_ca
     common_name: rep client
     extended_key_usage:
     - client_auth
 - name: diego_rep_agent_v2
   type: certificate
   options:
-    ca: service_cf_internal_ca
+    ca: internal_ca
     common_name: cell.service.cf.internal
     extended_key_usage:
     - client_auth
@@ -1756,22 +1875,17 @@ variables:
     - cell.service.cf.internal
     - 127.0.0.1
     - localhost
-- name: loggregator_ca
-  type: certificate
-  options:
-    is_ca: true
-    common_name: loggregatorCA
 - name: loggregator_tls_statsdinjector
   type: certificate
   options:
-    ca: loggregator_ca
+    ca: internal_ca
     common_name: statsdinjector
     extended_key_usage:
     - client_auth
 - name: loggregator_tls_agent
   type: certificate
   options:
-    ca: loggregator_ca
+    ca: internal_ca
     common_name: metron
     extended_key_usage:
     - client_auth
@@ -1779,7 +1893,7 @@ variables:
 - name: loggregator_tls_doppler
   type: certificate
   options:
-    ca: loggregator_ca
+    ca: internal_ca
     common_name: doppler
     extended_key_usage:
     - client_auth
@@ -1787,7 +1901,7 @@ variables:
 - name: loggregator_tls_tc
   type: certificate
   options:
-    ca: loggregator_ca
+    ca: internal_ca
     common_name: trafficcontroller
     extended_key_usage:
     - client_auth
@@ -1795,21 +1909,21 @@ variables:
 - name: loggregator_tls_cc_tc
   type: certificate
   options:
-    ca: service_cf_internal_ca
+    ca: internal_ca
     common_name: trafficcontroller
     extended_key_usage:
     - client_auth
 - name: loggregator_rlp_gateway_tls_cc
   type: certificate
   options:
-    ca: service_cf_internal_ca
+    ca: internal_ca
     common_name: rlp-gateway
     extended_key_usage:
     - client_auth
 - name: loggregator_tls_rlp
   type: certificate
   options:
-    ca: loggregator_ca
+    ca: internal_ca
     common_name: reverselogproxy
     extended_key_usage:
     - client_auth
@@ -1817,14 +1931,14 @@ variables:
 - name: loggregator_rlp_gateway
   type: certificate
   options:
-    ca: loggregator_ca
+    ca: internal_ca
     common_name: rlp_gateway
     extended_key_usage:
     - client_auth
 - name: adapter_rlp_tls
   type: certificate
   options:
-    ca: loggregator_ca
+    ca: internal_ca
     common_name: ss-adapter-rlp
     extended_key_usage:
     - client_auth
@@ -1832,7 +1946,7 @@ variables:
 - name: scheduler_api_tls
   type: certificate
   options:
-    ca: service_cf_internal_ca
+    ca: internal_ca
     common_name: ss-scheduler
     extended_key_usage:
     - client_auth
@@ -1840,7 +1954,7 @@ variables:
 - name: adapter_tls
   type: certificate
   options:
-    ca: loggregator_ca
+    ca: internal_ca
     common_name: ss-adapter
     extended_key_usage:
     - server_auth
@@ -1848,22 +1962,17 @@ variables:
 - name: scheduler_client_tls
   type: certificate
   options:
-    ca: loggregator_ca
+    ca: internal_ca
     common_name: ss-scheduler
     extended_key_usage:
     - client_auth
 - name: logs_provider
   options:
-    ca: loggregator_ca
+    ca: internal_ca
     common_name: log-cache
     extended_key_usage:
     - client_auth
     - server_auth
-  type: certificate
-- name: log_cache_ca
-  options:
-    common_name: log-cache
-    is_ca: true
   type: certificate
 - name: log_cache
   options:
@@ -1871,7 +1980,7 @@ variables:
     - log_cache
     - log-cache
     - logcache
-    ca: log_cache_ca
+    ca: internal_ca
     common_name: log-cache
     extended_key_usage:
     - client_auth
@@ -1879,45 +1988,35 @@ variables:
   type: certificate
 - name: log_cache_tls_cc_auth_proxy
   options:
-    ca: service_cf_internal_ca
+    ca: internal_ca
     common_name: log-cache
     extended_key_usage:
     - client_auth
   type: certificate
-- name: router_ca
-  type: certificate
-  options:
-    is_ca: true
-    common_name: routerCA
 - name: router_ssl
   type: certificate
   options:
-    ca: router_ca
+    ca: internal_ca
     common_name: routerSSL
     alternative_names:
     - "((system_domain))"
     - "*.((system_domain))"
-- name: uaa_ca
-  type: certificate
-  options:
-    is_ca: true
-    common_name: uaaCA
 - name: uaa_ssl
   type: certificate
   options:
-    ca: uaa_ca
+    ca: internal_ca
     common_name: uaa.service.cf.internal
     alternative_names:
     - uaa.service.cf.internal
 - name: uaa_login_saml
   type: certificate
   options:
-    ca: uaa_ca
+    ca: internal_ca
     common_name: uaa_login_saml
 - name: cc_tls
   type: certificate
   options:
-    ca: service_cf_internal_ca
+    ca: internal_ca
     common_name: cloud-controller-ng.service.cf.internal
     extended_key_usage:
     - client_auth
@@ -1925,7 +2024,7 @@ variables:
 - name: cc_public_tls
   type: certificate
   options:
-    ca: service_cf_internal_ca
+    ca: internal_ca
     common_name: "api.((system_domain))"
     alternative_names:
     - "api.((system_domain))"
@@ -1933,28 +2032,28 @@ variables:
 - name: cc_bridge_tps
   type: certificate
   options:
-    ca: service_cf_internal_ca
+    ca: internal_ca
     common_name: tps_watcher
     extended_key_usage:
     - client_auth
 - name: cc_bridge_cc_uploader
   type: certificate
   options:
-    ca: service_cf_internal_ca
+    ca: internal_ca
     common_name: cc_uploader
     extended_key_usage:
     - client_auth
 - name: cc_bridge_cc_uploader_server
   type: certificate
   options:
-    ca: service_cf_internal_ca
+    ca: internal_ca
     common_name: cc-uploader.service.cf.internal
     extended_key_usage:
     - server_auth
 - name: diego_locket_server
   type: certificate
   options:
-    ca: service_cf_internal_ca
+    ca: internal_ca
     common_name: locket.service.cf.internal
     extended_key_usage:
     - server_auth
@@ -1964,41 +2063,25 @@ variables:
 - name: diego_locket_client
   type: certificate
   options:
-    ca: service_cf_internal_ca
+    ca: internal_ca
     common_name: locket client
     extended_key_usage:
     - client_auth
 - name: locket_database_password
   type: password
-- name: application_ca
-  type: certificate
-  options:
-    common_name: appRootCA
-    is_ca: true
-- name: diego_instance_identity_ca
-  type: certificate
-  options:
-    ca: application_ca
-    common_name: instanceIdentityCA
-    is_ca: true
 - name: gorouter_backend_tls
   type: certificate
   options:
-    ca: service_cf_internal_ca
+    ca: internal_ca
     extended_key_usage:
     - client_auth
     common_name: gorouter_backend_tls
     alternative_names:
     - gorouter.service.cf.internal
-- name: credhub_ca
-  type: certificate
-  options:
-    common_name: credhubServerCa
-    is_ca: true
 - name: credhub_tls
   type: certificate
   options:
-    ca: credhub_ca
+    ca: internal_ca
     common_name: credhub.((system_domain))
     alternative_names:
     - credhub.service.cf.internal
